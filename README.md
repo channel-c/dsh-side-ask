@@ -1,62 +1,84 @@
-# @zhuchenglong/dsh-side-chat
+# DSH Side Codex · 旁问
 
-[![npm version](https://img.shields.io/npm/v/@zhuchenglong/dsh-side-chat)](https://www.npmjs.com/package/@zhuchenglong/dsh-side-chat)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[English](README_EN.md)
 
-**English:** [README_EN.md](README_EN.md)
+在 DeepSeek Harness 的原生右侧栏里，围绕主对话顺便提问。旁问继承主对话上下文，拥有独立的消息、模型和推理等级。
 
-Codex 风格的 `/side` 侧边对话插件（DeepSeek Harness Web GUI）。
-
-在运行中的主对话旁边打开一个**临时分叉对话**：继承主线已完成的上下文、不打断主任务、不污染主线程的模型上下文。适合"边跑边问"——在主线任务运行的同时，侧边问一句"这里为什么这么写？"、"这个报错是什么意思？"。
+本项目基于 [zclDragon/dsh-side-chat](https://github.com/zclDragon/dsh-side-chat) 的 MIT 许可代码继续开发，保留原作者署名。交互参考 Codex，界面沿用 DSH 自身的组件、字体和主题；与 OpenAI、DeepSeek 无隶属关系。
 
 ## 功能
 
-- **`/side` 命令**：在当前会话旁开一个侧边对话（继承主线截至最后一个 `turn/end` 的完整上下文）。
-- **浮动侧边面板**：右下角「💬 侧聊」按钮开关；面板内可新建、切换、关闭侧边对话。
-- **实时问答**：侧聊会话走与主对话相同的消息通道（`session.prompt`），流式渲染、可停止。
-- **Markdown 渲染**：侧聊回复用与主对话同款的 `MarkdownText`（标题/代码块/表格/公式），流式跟随滚动。
-- **并发不中断**：侧聊 agent 与主 agent 同进程并发运行，主任务不被打断。
-- **关闭即移除**：关闭侧聊时 dispose agent 并归档会话，从面板与侧边栏一并消失。
-- **不污染主线**：`/side` 只在主线程日志里留一条命令卡片，不进入模型上下文。
+- 原生右侧栏，通过侧栏入口、`/side` 或 `/btw` 打开。
+- 创建旁问时继承主对话历史；主任务进行中也能从已接纳的问题、已完成步骤处分支。
+- 选中主对话文字，点击悬浮按钮「发送到旁问」，生成可移除的引用气泡；补充问题后再发送。
+- 使用 DSH 原生发送、停止、复制交互，流式显示回答及模型实际返回的思考过程。
+- 输入框底部复用 DSH 原生模型菜单，默认继承主对话的模型与推理等级，也能单独切换。
+- 切换模型保留旁问历史；停止旁问只停止当前旁问。
+
+## 预览
+
+![原生旁问对话与独立模型](assets/side-chat.png)
+
+![原生模型与推理等级菜单](assets/model-menu.png)
 
 ## 安装
 
-```sh
-dsh plugin --profile web add @zhuchenglong/dsh-side-chat
+已在 **DSH Desktop 0.2.1-rc.5**（Windows）验证。当前声明的宿主范围为 `>=0.2.1-rc.5 <0.2.2-0`；后续版本需验证后再扩大兼容范围。
+
+下载 [最新 Release](https://github.com/channel-c/dsh-side-codex/releases/latest) 的预构建安装包。在 DSH Desktop 的插件管理中，通过「从 URL 安装」或添加插件源输入：
+
+```text
+https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
 ```
 
-或从 GitHub 安装：
+从终端启动的 DSH Web 可执行：
 
 ```sh
-dsh plugin --profile web add github:zclDragon/dsh-side-chat#main
+dsh plugin --profile web add https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
 ```
 
-重启 `dsh web`（或刷新浏览器）后生效。
+也可以从带有预构建 `lib/` 的 GitHub 仓库安装：
+
+```sh
+dsh plugin --profile web add github:channel-c/dsh-side-codex#main
+```
+
+安装到实际使用的 profile，按宿主提示重新加载。Desktop 与 CLI 的 `web` profile 不是同一配置。
+
+请只启用本插件的一个版本。它与原版 `@zhuchenglong/dsh-side-chat`、早期 `dsh-side-codex-dbg*` 版本共享命令和路由，不能同时启用。
 
 ## 使用
 
-1. 在浏览器中打开 GUI（默认 http://127.0.0.1:3080）。
-2. 点右下角「💬 侧聊」，或直接输入 `/side`。
-3. 在面板里点「＋ 新建」开一个侧边对话，然后输入问题。
+1. 打开已有主对话，在右侧栏选择「侧边对话」，或输入 `/side`。
+2. 输入问题，按 Enter 发送；Shift+Enter 换行。也可先选中文字，再点击「发送到旁问」。
+3. 在输入框底部点击模型名称，选择旁问的模型和推理等级。尚未创建旁问时显示「继承主对话」，点击后创建独立会话并展开菜单，创建本身不发起模型请求。
+4. 生成时可停止，思考过程可展开。通过侧栏标签的关闭按钮结束当前旁问。
 
-## 工作原理
+`/side 你的问题` 与 `/btw 你的问题` 会直接把问题发到旁问。
 
-- **Host 半**（`src/index.ts`）：注册 `/side-chat` 路由（`open`/`list`/`close`）与 `/side` 命令。`open` 复用 DSH 的 fork 语义——以父会话「最后一个 `turn/end` 起、延伸到下一个 `turn/start` 之前」的完整日志前缀为种子，通过 `ctx.agents.create` 创建子 agent，并继承父会话的 agent preset 组合与模型选择。
-- **Client 半**（`src/client/`）：通过 `ctx.sessions` 绑定侧聊会话、打开其事件窗口（`session.open()`），订阅实时会话快照渲染紧凑 transcript；消息经 `session.prompt()` 投递。
-- **注册表**：进程内 `Map<sideSessionId, parentSessionId>` 记录分组；进程重启后侧聊会话仍在（普通持久化），但分组关系需后续迭代用 `ctx.storageDomain` 持久化。
+## 上下文与隔离
+
+- **上下文是创建时的快照。** 已有旁问不会自动同步主对话后续的新消息；可以继续引用主对话中的新选区，或关闭当前旁问后重新开启。
+- 继承的是 DSH 当前提供给模型的历史。若主对话已经压缩，旁问也受相同压缩与上下文窗口限制。
+- 旁问的回答和停止操作不写回、不取消主任务。两边共用工作目录；如果明确要求旁问编辑文件，文件改动仍对主任务可见。
+- 旁问将继承历史视为背景，不自动续做父任务、父任务排队消息或未完成工具调用。这是提示策略，不是文件系统沙箱。
+- 缓存由所选模型服务和 DSH 适配器处理。继承上下文不保证缓存命中；换模型或供应商可能降低复用。新的回答仍需生成并计费。
+- 旁问的活动分组保存在当前进程中，重启后不会恢复为活动面板。关闭时释放 agent，并通过宿主归档会话；本插件不删除 DSH 的持久会话日志。
 
 ## 开发
 
+使用 Node.js 24：
+
 ```sh
-pnpm install
-pnpm typecheck     # tsc --noEmit
-pnpm test          # vitest（host 9 + client 4）
-pnpm build         # tsc 声明 + tsdown 产物（lib/index.js + lib/client.js）
-pnpm pack          # 发布用 tarball
+npm ci
+npm run check
+npm pack
 ```
 
-## 已知限制（后续迭代）
+预构建 `lib/` 随仓库和 Release 一起提供，安装时无需执行构建脚本。源码、回归测试及构建脚本均包含在仓库中。
 
-- 进程重启后侧聊的「分组关系」暂不持久化（会话本身持久化）。
-- 面板列表用 3s 轮询刷新（`/side` 命令新开的侧聊最长 3s 后出现）。
-- 侧聊继承上下文截至最后一个 `turn/end`（与 DSH fork 一致），进行中的 turn 无法继承。
+实现说明见 [架构](docs/architecture.md)，版本变化见 [CHANGELOG](CHANGELOG.md)。遇到问题请提交 [Issue](https://github.com/channel-c/dsh-side-codex/issues)，附 DSH 版本和复现步骤，先移除日志中的凭据与私人对话。
+
+## 许可与来源
+
+MIT，见 [LICENSE](LICENSE)。上游：[zclDragon/dsh-side-chat](https://github.com/zclDragon/dsh-side-chat)。本 fork 增加原生侧栏、选区引用、思考过程显示、独立模型选择，并修复启动兼容性与父任务排队消息串入旁问的问题。

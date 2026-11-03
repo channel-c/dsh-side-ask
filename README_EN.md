@@ -1,90 +1,79 @@
-# @zhuchenglong/dsh-side-chat
+# DSH Side Codex
 
-[![npm version](https://img.shields.io/npm/v/@zhuchenglong/dsh-side-chat)](https://www.npmjs.com/package/@zhuchenglong/dsh-side-chat)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[中文](README.md)
 
-Codex-style `/side` side conversations for the DeepSeek Harness Web GUI.
+A native DSH sidebar for independent side questions with inherited conversation context, quoted selections, streamed reasoning, and per-side-chat model selection.
 
-While your main task runs, open a **temporary fork of the current chat** in a
-floating panel: it inherits the main thread's completed context, never
-interrupts the running task, and never pollutes the main thread's model
-context. Perfect for "ask while working" — "why did you implement it this
-way?", "what does this error mean?", "what was the signature again?"
+This is an MIT-licensed fork of [zclDragon/dsh-side-chat](https://github.com/zclDragon/dsh-side-chat). It takes interaction ideas from Codex while using DSH's components, typography and theme. It is not affiliated with OpenAI or DeepSeek.
 
 ## Features
 
-- **`/side` command** — open a side conversation beside the current session
-  (inherits context up to the last completed `turn/end`).
-- **Floating panel** — a「💬 侧聊」toggle in the bottom-right corner; create,
-  switch, and close side chats from the panel.
-- **Live Q&A** — side chats post through the same message channel as the main
-  conversation (`session.prompt`), stream in real time, and can be stopped.
-- **Markdown rendering** — replies render with the same `MarkdownText` the
-  main conversation uses (headings, code blocks, tables, math), with
-  follow-the-latest auto-scroll.
-- **Concurrent, non-blocking** — the side agent runs in the same process
-  alongside the main agent; your main task keeps going.
-- **Close = removed** — closing a side chat disposes its agent and archives
-  the session, so it disappears from the panel and the sidebar.
-- **Parent-aware** — the panel header shows the parent conversation and side
-  count; chips stay `#N`, hovering shows the side chat's own first question.
-- **Clean main thread** — `/side` leaves only a command card in the main log,
-  never model context.
+- Open the native right sidebar, `/side`, or `/btw`.
+- Inherit an accepted main-chat question or completed step, including while the main task runs.
+- Select main-chat text and choose **发送到旁问**. A removable quote appears in the composer; add your question before sending.
+- Stream answers and actual provider-returned reasoning, with native DSH send/stop/copy controls.
+- Use DSH's native model and reasoning-effort menu independently in each side chat. The initial selection is inherited from the parent, including a model change that has not been used in a request yet.
+- Keep side-chat history when switching models. Stopping a side chat does not stop its parent.
+
+## Preview
+
+![Native sidebar with independent model selection](assets/side-chat.png)
+
+![Native model and reasoning effort menu](assets/model-menu.png)
 
 ## Install
 
-```sh
-dsh plugin --profile web add @zhuchenglong/dsh-side-chat
+Tested on **DSH Desktop 0.2.1-rc.5**, Windows. Declared host range: `>=0.2.1-rc.5 <0.2.2-0`. Later host versions require validation before broadening this range.
+
+In DSH Desktop, install the prebuilt package URL through the plugin manager:
+
+```text
+https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
 ```
 
-Or install from GitHub:
+For a CLI-managed Web profile:
 
 ```sh
-dsh plugin --profile web add github:zclDragon/dsh-side-chat#main
+dsh plugin --profile web add https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
 ```
 
-Restart `dsh web` (or refresh the browser) to pick it up.
+The repository also includes built `lib/` files:
+
+```sh
+dsh plugin --profile web add github:channel-c/dsh-side-codex#main
+```
+
+Install into the profile you actually use, then reload as directed by your host. The Desktop and CLI `web` profiles are separate.
+
+Enable only one version. This fork shares commands and routes with the original `@zhuchenglong/dsh-side-chat` and old `dsh-side-codex-dbg*` builds; do not enable them together.
 
 ## Usage
 
-1. Open the GUI in your browser (default http://127.0.0.1:3080).
-2. Click「💬 侧聊」in the bottom-right corner, or type `/side`.
-3. Click「＋ 新建」to open a side chat, then ask your question.
+Open a main conversation, select the side-chat tab, and ask a question. Enter sends; Shift+Enter adds a newline. The initial model entry reads **继承主对话**; clicking it creates a child session and opens the native menu, without making a model request. Change the model or reasoning effort there. Use the native tab close button to close the current side chat.
 
-## How it works
+`/side your question` and `/btw your question` send directly into a side chat.
 
-- **Host half** (`src/index.ts`): registers the `/side-chat` routes
-  (`open`/`list`/`close`) and the `/side` command. `open` reuses DSH's fork
-  semantics — the seed is the parent's complete log prefix from the last
-  `turn/end` up to (not including) the next `turn/start` — then creates a
-  child agent with `ctx.agents.create`, inheriting the parent's agent-preset
-  composition and model selection. The panel header title is derived from the
-  side chat's *own* first user message (bounded by `seedLength`, so inherited
-  parent messages are never used).
-- **Client half** (`src/client/`): binds side sessions through `ctx.sessions`,
-  opens their event window (`session.open()`), subscribes to the live
-  conversation snapshot, and renders a compact markdown transcript; messages
-  post via `session.prompt()`.
-- **Registry**: an in-process `Map<sideSessionId, parentSessionId>` records
-  grouping; when a parent session is disposed, every descendant side chat is
-  disposed too (orphan cleanup).
+## Context and lifetime
 
-## Development
+- Context is a snapshot taken at side-chat creation, not a live subscription to later parent messages. Quote newer passages explicitly, or close and reopen for a fresh snapshot.
+- Inherited history is subject to DSH compaction and the chosen model's context window.
+- Side messages and cancellation are isolated. Both agents share the working directory, so explicitly requested file edits affect the same files.
+- An agent-scoped prompt treats inherited history as background and prevents automatic continuation of the parent task. It is a prompt policy, not a filesystem sandbox.
+- Cache behavior belongs to DSH and the chosen provider. Sharing context does not guarantee cache hits; changing providers/models can reduce reuse. New output still requires inference and incurs usage.
+- Active side-chat grouping is in memory and is not restored after a restart. Closing releases the agent and asks DSH to archive the session; the plugin does not delete persisted session logs.
+
+## Develop
+
+With Node.js 24:
 
 ```sh
-pnpm install
-pnpm typecheck     # tsc --noEmit
-pnpm test          # vitest (host + client)
-pnpm build         # tsc declarations + tsdown artifacts (lib/index.js + lib/client.js)
-pnpm pack          # publish tarball
+npm ci
+npm run check
+npm pack
 ```
 
-## Known limitations (next iterations)
+Prebuilt files are committed and shipped in release tarballs. No install-time build script is required. See [architecture](docs/architecture.md), [changelog](CHANGELOG.md), and [issues](https://github.com/channel-c/dsh-side-codex/issues).
 
-- The side-chat grouping registry is in-process; a process restart loses the
-  grouping (the sessions themselves persist). A durable registry via
-  `ctx.storageDomain` is planned.
-- The panel list refreshes on a 3s poll (a side chat opened via `/side`
-  appears within ~3s).
-- A side chat inherits context only up to the last completed `turn/end`
-  (same as a DSH fork); an in-flight turn cannot be inherited.
+## License
+
+MIT. Original copyright retained in [LICENSE](LICENSE). This fork adds the native sidebar, quote attachments, reasoning display, independent model selection, and startup/parent-queue isolation fixes.

@@ -10,3 +10,5 @@ export declare const PLUGIN_ID = "side-chat";
 export declare const ROUTE_PREFIX = "/side-chat";
 /** The human command name registered by this plugin (without the leading slash). */
 export declare const SIDE_COMMAND = "side";
+/** Codex's alias for `/side` (`/btw`); registered as its own definition. */
+export declare const SIDE_ALIAS = "btw";
