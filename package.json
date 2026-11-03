@@ -1,22 +1,21 @@
 {
-  "name": "dsh-side-codex",
-  "version": "0.3.3",
+  "name": "dsh-side-ask",
+  "version": "0.3.4",
   "description": "Native DSH side chat with inherited context, quoted selections, streaming reasoning and independent model selection",
   "keywords": [
     "dsh",
     "dsh-plugin",
     "deepseek-harness",
     "side-chat",
-    "codex",
     "plugin"
   ],
-  "homepage": "https://github.com/channel-c/dsh-side-codex#readme",
+  "homepage": "https://github.com/channel-c/dsh-side-ask#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/channel-c/dsh-side-codex.git"
+    "url": "git+https://github.com/channel-c/dsh-side-ask.git"
   },
   "bugs": {
-    "url": "https://github.com/channel-c/dsh-side-codex/issues"
+    "url": "https://github.com/channel-c/dsh-side-ask/issues"
   },
   "type": "module",
   "license": "MIT",

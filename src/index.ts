@@ -1,5 +1,5 @@
 /**
- * dsh-side-codex host half: Codex-style `/side` side conversations.
+ * dsh-side-ask host half: native `/side` side conversations.
  *
  * A side chat is a fork of the parent session — same completed-turn prefix as
  * a model-visible fork, same agent preset composition — created as an ordinary
@@ -18,7 +18,7 @@
  * services; there is no new capability a malicious caller gains beyond
  * forking sessions it could already fork.
  *
- * @module dsh-side-codex
+ * @module dsh-side-ask
  */
 
 import { randomUUID } from 'node:crypto'
@@ -40,7 +40,7 @@ import { sidePromptContent, sidePromptParts } from './quoted-text.ts'
 export { ROUTE_PREFIX, SIDE_ALIAS, SIDE_COMMAND, PLUGIN_ID } from './invariant.ts'
 
 /** Plugin identity for cordis.yml rows. */
-export const name = 'dsh-side-codex'
+export const name = 'dsh-side-ask'
 
 /** Services required before mounting. */
 export const inject = ['webServer', 'sessions', 'agents', 'commands', 'agentPresets', 'systemPrompt']
@@ -431,7 +431,7 @@ export function apply(ctx: Context, config?: Config): void {
     return agent
   }
 
-  /** Whether the parent conversation is mid-turn (Codex's side panel shows this). */
+  /** Whether the parent conversation is mid-turn. */
   function parentRunning(parentSessionId: SessionId): boolean {
     return ctx.agents.get(parentSessionId)?.status === 'running'
   }
@@ -487,7 +487,7 @@ export function apply(ctx: Context, config?: Config): void {
         | undefined
       if (workspaces !== undefined) {
         await workspaces.archiveSession(sideSessionId).catch((error: unknown) => {
-          ctx.logger.warn(`[dsh-side-codex] archive "${sideSessionId}" failed: ${String(error)}`)
+          ctx.logger.warn(`[dsh-side-ask] archive "${sideSessionId}" failed: ${String(error)}`)
         })
       }
     }
@@ -542,12 +542,12 @@ export function apply(ctx: Context, config?: Config): void {
           try {
             await (record.handle as { dispose: () => Promise<void> }).dispose()
           } catch (error: unknown) {
-            ctx.logger.warn(`[dsh-side-codex] orphan cleanup of "${id}" failed: ${String(error)}`)
+            ctx.logger.warn(`[dsh-side-ask] orphan cleanup of "${id}" failed: ${String(error)}`)
           }
         }
       })()
     })
-  }, 'dsh-side-codex: orphan cleanup')
+  }, 'dsh-side-ask: orphan cleanup')
 
   // ── /side-chat routes ──────────────────────────────────────────────────
   ctx.effect(() => {
@@ -659,13 +659,13 @@ export function apply(ctx: Context, config?: Config): void {
             return
           }
           const message = error instanceof Error ? error.message : String(error)
-          ctx.logger.warn(`[dsh-side-codex] route error: ${message}`)
+          ctx.logger.warn(`[dsh-side-ask] route error: ${message}`)
           writeJson(res, 500, { error: message })
         }
       },
     })
     return dispose
-  }, 'dsh-side-codex: /side-chat routes')
+  }, 'dsh-side-ask: /side-chat routes')
 
   // ── /side human command ────────────────────────────────────────────────
   ctx.effect(() => {
@@ -673,12 +673,12 @@ export function apply(ctx: Context, config?: Config): void {
       name: commandName,
       description: commandName === SIDE_COMMAND
         ? description
-        : `${description}（/side 的别名，等同 Codex 的 /btw）`,
+        : `${description}（/side 的别名）`,
       recordInput: false,
       handler: async (invocation: CommandInvocation): Promise<{ kind: 'success'; text: string }> => {
         const parentSessionId = invocation.agent.session.id
         const sideSessionId = await openSideChat(parentSessionId)
-        // Codex accepts a one-shot question on the command line: `/side <text>`.
+        // Accept a one-shot question on the command line: `/side <text>`.
         const inline = invocation.rawInput.trim()
         if (inline === '') {
           return { kind: 'success', text: `已打开侧边对话（${sideSessionId}），可在侧边面板中继续提问。` }
@@ -688,5 +688,5 @@ export function apply(ctx: Context, config?: Config): void {
       },
     }))
     return () => { for (const dispose of disposers) dispose() }
-  }, 'dsh-side-codex: /side command')
+  }, 'dsh-side-ask: /side command')
 }

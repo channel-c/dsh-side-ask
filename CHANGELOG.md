@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.4 — 2026-11-03
+
+- Rename the project and package to DSH Side Ask (`dsh-side-ask`).
+- Use neutral wording in documentation, command descriptions, source identifiers and release assets.
+- Keep the existing side-chat routes, commands and session behavior.
+
 ## 0.3.3 — 2026-11-03
 
 - Native DSH right-sidebar side conversations, with main-chat history captured at an accepted question or completed step.

@@ -25,8 +25,8 @@ export function installSelectionAction(sidebar: Sidebar): () => void {
     const text = selection?.toString().trim() ?? ''
     if (parent === undefined || selection === null || selection.isCollapsed || selection.rangeCount !== 1 || text === ''
       || area === null || area === undefined || !area.contains(focus ?? null)
-      || anchor?.closest('[data-dsh-side-codex-pane],input,textarea,[contenteditable="true"],[data-composer-card]')
-      || focus?.closest('[data-dsh-side-codex-pane],input,textarea,[contenteditable="true"],[data-composer-card]')) { hide(); return }
+      || anchor?.closest('[data-dsh-side-ask-pane],input,textarea,[contenteditable="true"],[data-composer-card]')
+      || focus?.closest('[data-dsh-side-ask-pane],input,textarea,[contenteditable="true"],[data-composer-card]')) { hide(); return }
     const rect = selection.getRangeAt(0).getBoundingClientRect()
     if (rect.width === 0 || rect.bottom < 0 || rect.top > window.innerHeight) { hide(); return }
     selected = { parent, text, x: Math.max(8, Math.min(rect.left, window.innerWidth - 160)), y: rect.top >= 48 ? rect.top - 42 : rect.bottom + 8 }

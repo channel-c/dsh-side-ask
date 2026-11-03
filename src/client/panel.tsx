@@ -1,9 +1,9 @@
 /**
- * The right-sidebar pane body: a Codex-style side conversation rendered with
+ * The right-sidebar pane body: a native side conversation rendered with
  * DSH's own primitives and design tokens so it reads as part of the shell
  * rather than as an overlay. All data comes from the plugin's own
  * /side-chat host routes; nothing here touches client session services.
- * @module dsh-side-codex/panel
+ * @module dsh-side-ask/panel
  */
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { MarkdownText, StateDot, TextShimmer, UserTextRun } from '@deepseek-ai/dsh-client-ui-primitives'
@@ -302,7 +302,7 @@ export function SidePane(props: SidePaneProps) {
   const title = sideChat === null ? '' : sideChat.title
 
   return (
-    <div style={rootStyle} data-dsh-side-codex-pane="" onKeyDown={(event) => {
+    <div style={rootStyle} data-dsh-side-ask-pane="" onKeyDown={(event) => {
       if (event.key !== 'Escape' || event.nativeEvent.isComposing) return
       event.stopPropagation()
       if (running) void stop()

@@ -2,7 +2,7 @@
  * Thin typed client for the plugin's own /side-chat host routes. Requests are
  * same-origin: the pane and the host webServer share one origin, so a relative
  * fetch carries whatever session cookie the shell already holds.
- * @module dsh-side-codex/api
+ * @module dsh-side-ask/api
  */
 
 /** One side chat as the host registry reports it. */

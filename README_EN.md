@@ -1,10 +1,10 @@
-# DSH Side Codex
+# DSH Side Ask
 
 [中文](README.md)
 
 A native DSH sidebar for independent side questions with inherited conversation context, quoted selections, streamed reasoning, and per-side-chat model selection.
 
-This is an MIT-licensed fork of [zclDragon/dsh-side-chat](https://github.com/zclDragon/dsh-side-chat). It takes interaction ideas from Codex while using DSH's components, typography and theme. It is not affiliated with OpenAI or DeepSeek.
+This is an MIT-licensed fork of [zclDragon/dsh-side-chat](https://github.com/zclDragon/dsh-side-chat). It uses DSH's components, typography and theme. It is not affiliated with OpenAI or DeepSeek.
 
 ## Features
 
@@ -28,24 +28,24 @@ Tested on **DSH Desktop 0.2.1-rc.5**, Windows. Declared host range: `>=0.2.1-rc.
 In DSH Desktop, install the prebuilt package URL through the plugin manager:
 
 ```text
-https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
+https://github.com/channel-c/dsh-side-ask/releases/latest/download/dsh-side-ask.tgz
 ```
 
 For a CLI-managed Web profile:
 
 ```sh
-dsh plugin --profile web add https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
+dsh plugin --profile web add https://github.com/channel-c/dsh-side-ask/releases/latest/download/dsh-side-ask.tgz
 ```
 
 The repository also includes built `lib/` files:
 
 ```sh
-dsh plugin --profile web add github:channel-c/dsh-side-codex#main
+dsh plugin --profile web add github:channel-c/dsh-side-ask#main
 ```
 
 Install into the profile you actually use, then reload as directed by your host. The Desktop and CLI `web` profiles are separate.
 
-Enable only one version. This fork shares commands and routes with the original `@zhuchenglong/dsh-side-chat` and old `dsh-side-codex-dbg*` builds; do not enable them together.
+Enable only one version. This fork shares commands and routes with the original `@zhuchenglong/dsh-side-chat` and earlier debug builds; do not enable them together.
 
 ## Usage
 
@@ -72,7 +72,7 @@ npm run check
 npm pack
 ```
 
-Prebuilt files are committed and shipped in release tarballs. No install-time build script is required. See [architecture](docs/architecture.md), [changelog](CHANGELOG.md), and [issues](https://github.com/channel-c/dsh-side-codex/issues).
+Prebuilt files are committed and shipped in release tarballs. No install-time build script is required. See [architecture](docs/architecture.md), [changelog](CHANGELOG.md), and [issues](https://github.com/channel-c/dsh-side-ask/issues).
 
 ## License
 

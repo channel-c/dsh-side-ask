@@ -1,5 +1,5 @@
 /**
- * dsh-side-codex host half: Codex-style `/side` side conversations.
+ * dsh-side-ask host half: native `/side` side conversations.
  *
  * A side chat is a fork of the parent session — same completed-turn prefix as
  * a model-visible fork, same agent preset composition — created as an ordinary
@@ -18,7 +18,7 @@
  * services; there is no new capability a malicious caller gains beyond
  * forking sessions it could already fork.
  *
- * @module dsh-side-codex
+ * @module dsh-side-ask
  */
 import type { Context } from '@deepseek-ai/cordis';
 import z from '@deepseek-ai/schemastery';
@@ -26,7 +26,7 @@ import type { ModelSelection } from '@deepseek-ai/dsh-agent';
 import type { Session, SessionEvent, SessionId } from '@deepseek-ai/dsh-session';
 export { ROUTE_PREFIX, SIDE_ALIAS, SIDE_COMMAND, PLUGIN_ID } from './invariant.ts';
 /** Plugin identity for cordis.yml rows. */
-export declare const name = "dsh-side-codex";
+export declare const name = "dsh-side-ask";
 /** Services required before mounting. */
 export declare const inject: string[];
 /** Plugin config. */

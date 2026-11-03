@@ -1,10 +1,10 @@
-# DSH Side Codex · 旁问
+# DSH Side Ask · 旁问
 
 [English](README_EN.md)
 
 在 DeepSeek Harness 的原生右侧栏里，围绕主对话顺便提问。旁问继承主对话上下文，拥有独立的消息、模型和推理等级。
 
-本项目基于 [zclDragon/dsh-side-chat](https://github.com/zclDragon/dsh-side-chat) 的 MIT 许可代码继续开发，保留原作者署名。交互参考 Codex，界面沿用 DSH 自身的组件、字体和主题；与 OpenAI、DeepSeek 无隶属关系。
+本项目基于 [zclDragon/dsh-side-chat](https://github.com/zclDragon/dsh-side-chat) 的 MIT 许可代码继续开发，保留原作者署名。界面沿用 DSH 自身的组件、字体和主题；与 OpenAI、DeepSeek 无隶属关系。
 
 ## 功能
 
@@ -25,27 +25,27 @@
 
 已在 **DSH Desktop 0.2.1-rc.5**（Windows）验证。当前声明的宿主范围为 `>=0.2.1-rc.5 <0.2.2-0`；后续版本需验证后再扩大兼容范围。
 
-下载 [最新 Release](https://github.com/channel-c/dsh-side-codex/releases/latest) 的预构建安装包。在 DSH Desktop 的插件管理中，通过「从 URL 安装」或添加插件源输入：
+下载 [最新 Release](https://github.com/channel-c/dsh-side-ask/releases/latest) 的预构建安装包。在 DSH Desktop 的插件管理中，通过「从 URL 安装」或添加插件源输入：
 
 ```text
-https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
+https://github.com/channel-c/dsh-side-ask/releases/latest/download/dsh-side-ask.tgz
 ```
 
 从终端启动的 DSH Web 可执行：
 
 ```sh
-dsh plugin --profile web add https://github.com/channel-c/dsh-side-codex/releases/latest/download/dsh-side-codex.tgz
+dsh plugin --profile web add https://github.com/channel-c/dsh-side-ask/releases/latest/download/dsh-side-ask.tgz
 ```
 
 也可以从带有预构建 `lib/` 的 GitHub 仓库安装：
 
 ```sh
-dsh plugin --profile web add github:channel-c/dsh-side-codex#main
+dsh plugin --profile web add github:channel-c/dsh-side-ask#main
 ```
 
 安装到实际使用的 profile，按宿主提示重新加载。Desktop 与 CLI 的 `web` profile 不是同一配置。
 
-请只启用本插件的一个版本。它与原版 `@zhuchenglong/dsh-side-chat`、早期 `dsh-side-codex-dbg*` 版本共享命令和路由，不能同时启用。
+请只启用本插件的一个版本。它与原版 `@zhuchenglong/dsh-side-chat`、早期 早期调试包 版本共享命令和路由，不能同时启用。
 
 ## 使用
 
@@ -77,7 +77,7 @@ npm pack
 
 预构建 `lib/` 随仓库和 Release 一起提供，安装时无需执行构建脚本。源码、回归测试及构建脚本均包含在仓库中。
 
-实现说明见 [架构](docs/architecture.md)，版本变化见 [CHANGELOG](CHANGELOG.md)。遇到问题请提交 [Issue](https://github.com/channel-c/dsh-side-codex/issues)，附 DSH 版本和复现步骤，先移除日志中的凭据与私人对话。
+实现说明见 [架构](docs/architecture.md)，版本变化见 [CHANGELOG](CHANGELOG.md)。遇到问题请提交 [Issue](https://github.com/channel-c/dsh-side-ask/issues)，附 DSH 版本和复现步骤，先移除日志中的凭据与私人对话。
 
 ## 许可与来源
 

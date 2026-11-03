@@ -7,7 +7,7 @@ import { installSelectionAction } from './selection.tsx'
 import { quoteDrafts } from './quote-drafts.ts'
 import type { ModelSessionReference } from './model-picker.tsx'
 
-export const name = 'dsh-side-codex'
+export const name = 'dsh-side-ask'
 export const TAB_KIND = 'side-chat'
 export const inject = ['slots', 'sidebarRightTabs', 'sidebarRight', 'sessions', 'locale']
 
@@ -61,7 +61,7 @@ export function apply(ctx: ClientContext): void {
   ctx.effect(() => {
     if (typeof document === 'undefined') return () => {}
     const style = document.createElement('style')
-    style.dataset.pluginCss = 'dsh-side-codex/native-ui'
+    style.dataset.pluginCss = 'dsh-side-ask/native-ui'
     style.textContent = SIDE_STYLES
     document.head.appendChild(style)
     return () => style.remove()
