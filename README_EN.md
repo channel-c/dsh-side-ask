@@ -23,7 +23,7 @@ This is an MIT-licensed fork of [zclDragon/dsh-side-chat](https://github.com/zcl
 
 ## Install
 
-Tested on **DSH Desktop 0.2.1-rc.5**, Windows. Declared host range: `>=0.2.1-rc.5 <0.2.2-0`. Later host versions require validation before broadening this range.
+Tested on **DSH Desktop 0.2.1-rc.5 and 0.2.2-rc.1**, Windows. Declared host range: >=0.2.1-rc.5 <0.2.3-0.
 
 In DSH Desktop, install the prebuilt package URL through the plugin manager:
 

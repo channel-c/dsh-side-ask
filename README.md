@@ -23,7 +23,7 @@
 
 ## 安装
 
-已在 **DSH Desktop 0.2.1-rc.5**（Windows）验证。当前声明的宿主范围为 `>=0.2.1-rc.5 <0.2.2-0`；后续版本需验证后再扩大兼容范围。
+已在 **DSH Desktop 0.2.1-rc.5 / 0.2.2-rc.1**（Windows）验证。当前声明的宿主范围为 >=0.2.1-rc.5 <0.2.3-0。
 
 下载 [最新 Release](https://github.com/channel-c/dsh-side-ask/releases/latest) 的预构建安装包。在 DSH Desktop 的插件管理中，通过「从 URL 安装」或添加插件源输入：
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.5 — 2026-11-27
+
+- Widen the `engines.dsh` and `dsh-llm` / `dsh-session` peer ranges to `>=0.2.1-rc.5 <0.2.3-0` so the plugin loads on DSH 0.2.2-rc.x without an exact-version exemption.
+- No runtime code changes; package metadata only.
+
+
 ## 0.3.4 — 2026-11-03
 
 - Rename the project and package to DSH Side Ask (`dsh-side-ask`).
